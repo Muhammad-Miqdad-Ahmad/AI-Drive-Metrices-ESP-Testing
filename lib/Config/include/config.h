@@ -13,8 +13,10 @@
 
 extern MPU6050 SENSOR;
 
+constexpr float G = 9.81f;
+
 // ─── USER CONFIG ─────────────────────────────────────────────────────────────
-#define BACKEND_URL "http://172.16.21.59:8000/predict"
+#define BACKEND_URL "http://192.168.100.10:8000/predict"
 #define SAMPLE_RATE_MS 500 // 2 Hz — must match model training rate
 #define WINDOW_SIZE 28     // must match notebook WINDOW_SIZE
 #define STEP_SIZE 14       // must match notebook STEP_SIZE

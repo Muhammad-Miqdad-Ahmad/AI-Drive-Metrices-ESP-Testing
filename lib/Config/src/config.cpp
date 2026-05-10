@@ -124,9 +124,9 @@ void post_window()
   {
     int idx = (windowIdx + i) % WINDOW_SIZE;
     JsonObject o = arr.add<JsonObject>();
-    o["AccX"] = window[idx].accX;
-    o["AccY"] = window[idx].accY;
-    o["AccZ"] = window[idx].accZ;
+    o["AccX"] = window[idx].accX / G;
+    o["AccY"] = window[idx].accY / G;
+    o["AccZ"] = window[idx].accZ / G;
     o["GyroX"] = window[idx].gyroX;
     o["GyroY"] = window[idx].gyroY;
     o["GyroZ"] = window[idx].gyroZ;
