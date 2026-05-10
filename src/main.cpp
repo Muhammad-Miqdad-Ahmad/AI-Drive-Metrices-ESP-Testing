@@ -71,7 +71,7 @@ void loop()
     windowIdx = (windowIdx + 1) % WINDOW_SIZE;
     sampleCount++;
 
-    Serial.printf("[%6lu] Acc(m/s²) X:%7.3f Y:%7.3f Z:%7.3f  |  Gyro(°/s) X:%7.2f Y:%7.2f Z:%7.2f\n",
+    Serial.printf("[%6lu] Acc(g) X:%7.3f Y:%7.3f Z:%7.3f  |  Gyro(°/s) X:%7.2f Y:%7.2f Z:%7.2f\n",
                   now / 1000,
                   s.accX / G, s.accY / G, s.accZ / G,
                   s.gyroX, s.gyroY, s.gyroZ);
