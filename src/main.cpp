@@ -5,7 +5,8 @@ void setup()
     Wire.begin(21, 22);
     delay(500);
 
-    Serial.begin(115200);
+    Serial.begin(UART_BAUD);
+    Serial.setTimeout(UART_TIMEOUT_MS);
     delay(2000);
 
     Serial.println("╔══════════════════════════════════╗");
@@ -14,51 +15,11 @@ void setup()
 
     SENSOR.initialize();
     Serial.println("[MPU6050] Initialized");
-
-    prefs.begin("wifi", true);
-    String ssid = prefs.getString("ssid", "");
-    String pass = prefs.getString("pass", "");
-    prefs.end();
-
-    if (ssid.isEmpty())
-    {
-        Serial.println("[Boot] No credentials → starting AP portal");
-        currentState = STATE_AP;
-        start_ap();
-    }
-    else
-    {
-        currentState = STATE_CONNECTING;
-        if (connect_wifi(ssid, pass))
-        {
-            currentState = STATE_RUNNING;
-            Serial.println("[Boot] WiFi connected → sensor loop starting");
-            Serial.printf("[Boot] Backend: %s\n", BACKEND_URL);
-        }
-        else
-        {
-            Serial.println("[Boot] WiFi failed → clearing creds, starting AP");
-            prefs.begin("wifi", false);
-            prefs.clear();
-            prefs.end();
-            currentState = STATE_AP;
-            start_ap();
-        }
-    }
+    Serial.println("[UART] Sending windows to PC over Serial USB");
 }
 
 void loop()
 {
-    if (currentState == STATE_AP)
-    {
-        dns.processNextRequest();
-        server.handleClient();
-        return;
-    }
-
-    if (currentState != STATE_RUNNING)
-        return;
-
     unsigned long now = millis();
     if (now - lastSampleMs < SAMPLE_RATE_MS)
         return;
@@ -66,7 +27,6 @@ void loop()
 
     SensorSample s;
     mpu_read(s);
-
     window[windowIdx] = s;
     windowIdx = (windowIdx + 1) % WINDOW_SIZE;
     sampleCount++;
@@ -78,7 +38,7 @@ void loop()
 
     if (sampleCount >= WINDOW_SIZE && (sampleCount % STEP_SIZE == 0))
     {
-        Serial.println("[Window] Full — sending to backend...");
+        Serial.println("[Window] Full — sending to PC over UART...");
         post_window();
     }
 }
